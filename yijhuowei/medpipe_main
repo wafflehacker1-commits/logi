@@ -1,0 +1,80 @@
+import sys
+import os
+import cv2
+import time
+
+# Add modules directory to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
+
+# Import configuration
+import config
+
+# Import vision module
+from vision.gesture_detector import GestureDetector
+
+def main():
+    print("🚀 FlowSense AI System Starting...")
+    print(f"   Debug Mode: {config.DEBUG}")
+    print(f"   Camera Index: {config.CAMERA_INDEX}")
+    print(f"   Hand Detection Confidence: {config.HAND_DETECTION_CONFIDENCE}")
+    
+    detector = None
+    cap = None
+    
+    try:
+        # 初始化手勢偵測器
+        detector = GestureDetector(confidence_threshold=config.HAND_DETECTION_CONFIDENCE)
+
+        # 打開攝像頭
+        cap = cv2.VideoCapture(config.CAMERA_INDEX)
+        if not cap.isOpened():
+            print(f"❌ 無法打開攝像頭 (索引: {config.CAMERA_INDEX})。請檢查攝像頭是否連接正確或更改 CAMERA_INDEX。")
+            sys.exit(1)
+
+        print("\n✅ 視覺模組初始化完成。按 'q' 鍵退出。")
+
+        prev_frame_time = 0
+        new_frame_time = 0
+
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                print("❌ 無法從攝像頭讀取影像。")
+                break
+
+            # 翻轉影像，讓它更自然 (鏡像效果)
+            frame = cv2.flip(frame, 1)
+
+            # 偵測手部
+            hand_data = detector.detect_hands(frame)
+
+            # 繪製關鍵點和手勢
+            frame_with_landmarks = detector.draw_landmarks(frame, hand_data)
+
+            # 顯示 FPS
+            new_frame_time = time.time()
+            fps = 1 / (new_frame_time - prev_frame_time)
+            prev_frame_time = new_frame_time
+            fps_text = f"FPS: {int(fps)}"
+            cv2.putText(frame_with_landmarks, fps_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+
+            # 顯示結果
+            cv2.imshow('FlowSense AI - Gesture Control', frame_with_landmarks)
+
+            # 按 'q' 鍵退出循環
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        # 釋放資源
+        if cap:
+            cap.release()
+        if detector:
+            detector.release()
+        cv2.destroyAllWindows()
+        print("\n🛑 FlowSense AI System Stopped.")
+
+if __name__ == "__main__":
+    main()

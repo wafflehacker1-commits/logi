@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiInsight — API Reference</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script>
+        const PRODUCT_NAME = "LogiInsight";
+    </script>
+    <style>
+        .sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; opacity: 0; transition: opacity 0.2s; }
+        .code-wrapper:hover .copy-btn { opacity: 1; }
+        .nav-link.active { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; border-left: 3px solid #3b82f6; }
+        .nav-link { border-left: 3px solid transparent; }
+        .method-sig { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-200 font-sans">
+
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 bg-gray-900 border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col">
+            <div class="p-6 border-b border-gray-800">
+                <h1 class="text-xl font-bold text-white tracking-tight">LogiInsight</h1>
+                <p class="text-xs text-gray-500 mt-1">AI‑Native Smart Webcam</p>
+            </div>
+            <nav class="flex-1 p-4 space-y-1">
+                <a href="index.html" class="nav-link block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                    Overview
+                </a>
+                <a href="setup.html" class="nav-link block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                    Setup Guide
+                </a>
+                <a href="api_reference.html" class="nav-link active block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition">
+                    API Reference
+                </a>
+                <a href="data_models.html" class="nav-link block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                    Data Models
+                </a>
+            </nav>
+            <!-- In-page anchors -->
+            <div class="px-4 pb-4">
+                <p class="text-xs text-gray-600 uppercase tracking-wider mb-2 px-4">On this page</p>
+                <a href="#class-overview" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Class Overview</a>
+                <a href="#constructor" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Constructor</a>
+                <a href="#connect" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">connect()</a>
+                <a href="#disconnect" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">disconnect()</a>
+                <a href="#set-ai-config" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">set_ai_config()</a>
+                <a href="#get-latest-ai-data" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">get_latest_ai_data()</a>
+                <a href="#is-connected" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">is_connected</a>
+                <a href="#config-table" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Configuration Table</a>
+                <a href="#exceptions" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Exceptions</a>
+            </div>
+            <div class="p-4 border-t border-gray-800 text-xs text-gray-600">
+                &copy; 2026 Logitech Europe S.A.
+            </div>
+        </aside>
+
+        <!-- Mobile Navbar -->
+        <div class="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between">
+            <h1 class="text-lg font-bold text-white">LogiInsight</h1>
+            <button id="mobile-menu-btn" class="text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="md:hidden fixed inset-0 z-40 bg-gray-900 bg-opacity-95 hidden flex-col p-6 pt-20 space-y-2">
+            <a href="index.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800">Overview</a>
+            <a href="setup.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800">Setup Guide</a>
+            <a href="api_reference.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-blue-400 bg-gray-800">API Reference</a>
+            <a href="data_models.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800">Data Models</a>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
+
+                <!-- Header -->
+                <div class="mb-12">
+                    <div class="inline-block px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-semibold tracking-wide uppercase mb-4">
+                        Python SDK
+                    </div>
+                    <h1 class="text-4xl font-extrabold text-white mb-4">API Reference</h1>
+                    <p class="text-lg text-gray-400 max-w-2xl">
+                        Complete reference for the <code class="bg-gray-800 px-1.5 py-0.5 rounded text-blue-300 text-sm">LogiWebcamClient</code> Python class — the host‑side client for controlling AI models and reading tracking data from the LogiInsight device.
+                    </p>
+                </div>
+
+                <!-- Module Import -->
+                <section class="mb-10">
+                    <div class="code-wrapper relative">
+                        <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">from logiwebcam import LogiWebcamClient</code></pre>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Requires: <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">pip install paramiko opencv-python numpy</code></p>
+                </section>
+
+                <!-- Class Overview -->
+                <section id="class-overview" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Class Overview</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                        <p class="method-sig text-blue-300 text-lg mb-3">class LogiWebcamClient</p>
+                        <p class="text-gray-400 mb-4">
+                            Client for controlling LogiInsight AI models over USB NCM (SSH). Manages an SSH connection to the device and provides methods to toggle AI inference models and read real‑time face/hand tracking data.
+                        </p>
+                        <p class="text-gray-400">
+                            Supports the context manager protocol (<code class="bg-gray-800 px-1 py-0.5 rounded text-sm">with</code> statement) for automatic connection/disconnection.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Constructor -->
+                <section id="constructor" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Constructor</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-800 bg-gray-900">
+                            <code class="method-sig text-blue-300 text-base">LogiWebcamClient(ip, username, password, port, timeout)</code>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-4">Initialize the client with connection parameters. Does <strong class="text-gray-200">not</strong> open a connection — call <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">connect()</code> or use a <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">with</code> block.</p>
+
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">Parameters</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-gray-500 border-b border-gray-800">
+                                        <tr>
+                                            <th class="py-2 px-3">Name</th>
+                                            <th class="py-2 px-3">Type</th>
+                                            <th class="py-2 px-3">Default</th>
+                                            <th class="py-2 px-3">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-300">
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">ip</td>
+                                            <td class="py-2.5 px-3 text-gray-500">str</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs">"192.168.1.10"</code></td>
+                                            <td class="py-2.5 px-3">Device IP address via USB NCM</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">username</td>
+                                            <td class="py-2.5 px-3 text-gray-500">str</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs">"makentu"</code></td>
+                                            <td class="py-2.5 px-3">SSH username on the device</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">password</td>
+                                            <td class="py-2.5 px-3 text-gray-500">str</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs">"MakeNTU@123"</code></td>
+                                            <td class="py-2.5 px-3">SSH password on the device</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">port</td>
+                                            <td class="py-2.5 px-3 text-gray-500">int</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs">22</code></td>
+                                            <td class="py-2.5 px-3">SSH port number</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">timeout</td>
+                                            <td class="py-2.5 px-3 text-gray-500">int</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs">10</code></td>
+                                            <td class="py-2.5 px-3">Connection timeout in seconds</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="code-wrapper relative mt-5">
+                                <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                                <pre><code class="language-python"># Default connection (USB NCM)
+cam = LogiWebcamClient()
+
+# Custom IP and timeout
+cam = LogiWebcamClient(ip="10.0.0.50", timeout=5)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- connect() -->
+                <section id="connect" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">connect()</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-800">
+                            <code class="method-sig text-blue-300 text-base">cam.connect() → None</code>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-4">
+                                Establish an SSH connection to the LogiInsight device. Initializes the USB‑C live stream. If already connected, this is a no‑op.
+                            </p>
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-2">Raises</h4>
+                            <p class="text-gray-400 mb-4">
+                                <code class="bg-gray-800 px-1.5 py-0.5 rounded text-red-400 text-sm">LogiWebcamConnectionError</code> — if the SSH connection fails (wrong IP, network unreachable, auth failure).
+                            </p>
+                            <div class="code-wrapper relative">
+                                <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                                <pre><code class="language-python">cam = LogiWebcamClient()
+cam.connect()  # Initializes the USB-C live stream
+# ... use the camera ...
+cam.disconnect()</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- disconnect() -->
+                <section id="disconnect" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">disconnect()</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-800">
+                            <code class="method-sig text-blue-300 text-base">cam.disconnect() → None</code>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-4">
+                                Close the SSH connection and release the hardware sensor. Safe to call even if not connected.
+                            </p>
+                            <div class="code-wrapper relative">
+                                <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                                <pre><code class="language-python"># Manual lifecycle
+cam.connect()
+# ... work with the camera ...
+cam.disconnect()  # Releases the hardware sensor
+
+# Preferred: context manager (auto-disconnects)
+with LogiWebcamClient() as cam:
+    # cam.connect() called automatically
+    pass
+# cam.disconnect() called automatically</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- set_ai_config() -->
+                <section id="set-ai-config" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">set_ai_config()</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-800">
+                            <code class="method-sig text-blue-300 text-base">cam.set_ai_config(enable_face_detection, enable_face_mesh, enable_hands) → bool</code>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-4">
+                                Update the AI model configuration on the device. Writes the configuration to the device's INI file, which the firmware picks up via inotify within ~200 ms.
+                            </p>
+
+                            <!-- FR-3 Warning -->
+                            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-5">
+                                <p class="text-yellow-300 text-sm">
+                                    <strong>Constraint:</strong> Face Mesh requires <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">enable_face_detection=True</code>.
+                                    If face detection is disabled, the mesh model has no bounding box input and will produce no landmarks.
+                                </p>
+                            </div>
+
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">Parameters</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-gray-500 border-b border-gray-800">
+                                        <tr>
+                                            <th class="py-2 px-3">Name</th>
+                                            <th class="py-2 px-3">Type</th>
+                                            <th class="py-2 px-3">Default</th>
+                                            <th class="py-2 px-3">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-300">
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">enable_face_detection</td>
+                                            <td class="py-2.5 px-3 text-gray-500">bool</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs text-green-400">True</code></td>
+                                            <td class="py-2.5 px-3">Enable face bounding box detection</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">enable_face_mesh</td>
+                                            <td class="py-2.5 px-3 text-gray-500">bool</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs text-red-400">False</code></td>
+                                            <td class="py-2.5 px-3">Enable 478‑point face landmark mesh. <span class="text-yellow-400">Requires face detection.</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2.5 px-3 font-mono text-blue-300">enable_hands</td>
+                                            <td class="py-2.5 px-3 text-gray-500">bool</td>
+                                            <td class="py-2.5 px-3"><code class="bg-gray-800 px-1 py-0.5 rounded text-xs text-red-400">False</code></td>
+                                            <td class="py-2.5 px-3">Enable 21‑point hand landmark tracking</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mt-5 mb-2">Returns</h4>
+                            <p class="text-gray-400 mb-2">
+                                <code class="bg-gray-800 px-1.5 py-0.5 rounded text-sm text-green-400">True</code> if the configuration was successfully written to the device.
+                            </p>
+                            <p class="text-gray-400 mb-4">
+                                <code class="bg-gray-800 px-1.5 py-0.5 rounded text-sm text-red-400">False</code> if the write failed (logged as error).
+                            </p>
+
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-2">Raises</h4>
+                            <p class="text-gray-400 mb-4">
+                                <code class="bg-gray-800 px-1.5 py-0.5 rounded text-red-400 text-sm">LogiWebcamConnectionError</code> — if not connected.
+                            </p>
+
+                            <div class="code-wrapper relative">
+                                <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                                <pre><code class="language-python"># Enable face detection + mesh (hands off)
+cam.set_ai_config(
+    enable_face_detection=True,
+    enable_face_mesh=True,
+    enable_hands=False,
+)
+
+# Enable all models
+cam.set_ai_config(
+    enable_face_detection=True,
+    enable_face_mesh=True,
+    enable_hands=True,
+)
+
+# Minimum config: face detection only (default)
+cam.set_ai_config()</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- get_latest_ai_data() -->
+                <section id="get-latest-ai-data" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">get_latest_ai_data()</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-800">
+                            <code class="method-sig text-blue-300 text-base">cam.get_latest_ai_data() → Optional[Dict]</code>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-4">
+                                Polls the NPU for the latest frame data. Reads and parses the JSON output file written by the firmware. Returns <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">None</code> if the file is empty, missing, or malformed.
+                            </p>
+
+                            <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-5">
+                                <p class="text-blue-300 text-sm">
+                                    <strong>Important:</strong> Always check <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">if results:</code> before accessing the returned data. If the hardware is disconnected, <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">get_latest_ai_data()</code> may return <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">None</code>.
+                                </p>
+                            </div>
+
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-2">Returns</h4>
+                            <p class="text-gray-400 mb-2">
+                                A <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">dict</code> with keys:
+                            </p>
+                            <ul class="list-disc list-inside text-gray-400 mb-4 space-y-1 ml-2">
+                                <li><code class="bg-gray-800 px-1 py-0.5 rounded text-sm text-blue-300">"timestamp_ms"</code> — Frame timestamp in milliseconds</li>
+                                <li><code class="bg-gray-800 px-1 py-0.5 rounded text-sm text-blue-300">"faces"</code> — List of detected face objects</li>
+                                <li><code class="bg-gray-800 px-1 py-0.5 rounded text-sm text-blue-300">"hands"</code> — List of detected hand objects</li>
+                            </ul>
+                            <p class="text-gray-400 mb-4">
+                                Or <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">None</code> if data is unavailable.
+                            </p>
+
+                            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-2">Raises</h4>
+                            <p class="text-gray-400 mb-4">
+                                <code class="bg-gray-800 px-1.5 py-0.5 rounded text-red-400 text-sm">LogiWebcamConnectionError</code> — if not connected.
+                            </p>
+
+                            <div class="code-wrapper relative">
+                                <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                                <pre><code class="language-python">data = cam.get_latest_ai_data()
+
+# Always guard against None
+if data:
+    ts = data["timestamp_ms"]
+    for face in data["faces"]:
+        x, y, w, h = face["bbox"]   # [x, y, width, height] in sensor pixels
+        conf = face["confidence"]
+        lm = face["landmarks"]      # list of [x, y, z] arrays (478 pts if mesh enabled)
+        print(f"[{ts}] Face at ({x},{y}) {w}x{h}, conf={conf:.2f}, landmarks={len(lm)}")
+
+    for hand in data["hands"]:
+        hx, hy, hw, hh = hand["bbox"]
+        hlm = hand["landmarks"]     # list of [x, y, z] arrays (21 pts)
+        print(f"[{ts}] Hand at ({hx},{hy}) {hw}x{hh}, landmarks={len(hlm)}")
+else:
+    print("No data — device may be initializing or disconnected")</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- is_connected -->
+                <section id="is-connected" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">is_connected</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-800">
+                            <code class="method-sig text-blue-300 text-base">cam.is_connected → bool</code>
+                            <span class="ml-2 text-xs bg-gray-700 text-gray-400 px-2 py-0.5 rounded">property</span>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-400 mb-4">
+                                Check if the SSH connection to the device is active. Returns <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">True</code> if the underlying SSH transport is alive.
+                            </p>
+                            <div class="code-wrapper relative">
+                                <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                                <pre><code class="language-python">if not cam.is_connected:
+    cam.connect()</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Core Configuration Table -->
+                <section id="config-table" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Core Configuration Table</h2>
+                    <p class="text-gray-400 mb-4">
+                        All options available via <code class="bg-gray-800 px-1.5 py-0.5 rounded text-blue-300 text-sm">set_ai_config()</code> and the underlying INI file:
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">Option Name</th>
+                                    <th class="py-3 px-4">Value Range</th>
+                                    <th class="py-3 px-4">Default</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">enable_face_detection</td>
+                                    <td class="py-3 px-4">bool</td>
+                                    <td class="py-3 px-4"><code class="text-green-400">True</code></td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">enable_face_mesh</td>
+                                    <td class="py-3 px-4">bool</td>
+                                    <td class="py-3 px-4"><code class="text-red-400">False</code></td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">enable_hands</td>
+                                    <td class="py-3 px-4">bool</td>
+                                    <td class="py-3 px-4"><code class="text-red-400">False</code></td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">max_num_faces</td>
+                                    <td class="py-3 px-4">Int [1, 5]</td>
+                                    <td class="py-3 px-4"><code>1</code></td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">max_num_hands</td>
+                                    <td class="py-3 px-4">Int [1, 2]</td>
+                                    <td class="py-3 px-4"><code>2</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono text-blue-300">min_detection_confidence</td>
+                                    <td class="py-3 px-4">Float [0, 1]</td>
+                                    <td class="py-3 px-4"><code>0.5</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Exceptions -->
+                <section id="exceptions" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Exceptions</h2>
+                    <div class="space-y-4">
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                            <code class="method-sig text-red-400 text-base">LogiWebcamConnectionError</code>
+                            <p class="text-gray-400 mt-2 text-sm">
+                                Raised when the SSH connection to the device fails. This can occur during <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">connect()</code> (wrong IP, unreachable network, auth failure) or when calling methods on a disconnected client.
+                            </p>
+                        </div>
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                            <code class="method-sig text-red-400 text-base">LogiWebcamDataError</code>
+                            <p class="text-gray-400 mt-2 text-sm">
+                                Raised when AI output data cannot be read or parsed. Note: <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">get_latest_ai_data()</code> catches JSON errors internally and returns <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">None</code> instead of raising.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Lifecycle Summary -->
+                <section class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Lifecycle Summary</h2>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                        <div class="flex flex-col md:flex-row items-center gap-4 text-center">
+                            <div class="bg-gray-800 rounded-lg px-5 py-3 flex-1">
+                                <p class="text-blue-300 font-mono text-sm mb-1">camera.start()</p>
+                                <p class="text-xs text-gray-500">connect()</p>
+                                <p class="text-gray-400 text-xs mt-1">Initialize USB‑C stream</p>
+                            </div>
+                            <div class="text-gray-600 text-2xl hidden md:block">&rarr;</div>
+                            <div class="bg-gray-800 rounded-lg px-5 py-3 flex-1">
+                                <p class="text-green-300 font-mono text-sm mb-1">camera.get_results()</p>
+                                <p class="text-xs text-gray-500">get_latest_ai_data()</p>
+                                <p class="text-gray-400 text-xs mt-1">Poll NPU for frame data</p>
+                            </div>
+                            <div class="text-gray-600 text-2xl hidden md:block">&rarr;</div>
+                            <div class="bg-gray-800 rounded-lg px-5 py-3 flex-1">
+                                <p class="text-red-300 font-mono text-sm mb-1">camera.stop()</p>
+                                <p class="text-xs text-gray-500">disconnect()</p>
+                                <p class="text-gray-400 text-xs mt-1">Release hardware sensor</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Next -->
+                <section class="bg-gray-900 border border-gray-800 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-white mb-2">Next: Data Models</h2>
+                        <p class="text-gray-400 text-sm">Explore the Face Mesh (478 landmarks) and Hand Tracking (21 landmarks) data structures, coordinate systems, and visual diagrams.</p>
+                    </div>
+                    <a href="data_models.html" class="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-lg transition whitespace-nowrap">
+                        Data Models &rarr;
+                    </a>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        function copyCode(btn) {
+            const code = btn.nextElementSibling.querySelector('code');
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

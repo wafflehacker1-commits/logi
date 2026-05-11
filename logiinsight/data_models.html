@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiInsight — Data Models</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script>
+        const PRODUCT_NAME = "LogiInsight";
+    </script>
+    <style>
+        .sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; opacity: 0; transition: opacity 0.2s; }
+        .code-wrapper:hover .copy-btn { opacity: 1; }
+        .nav-link.active { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; border-left: 3px solid #3b82f6; }
+        .nav-link { border-left: 3px solid transparent; }
+        /* SVG landmark diagrams */
+        .landmark-dot { transition: r 0.15s, fill 0.15s; }
+        .landmark-dot:hover { r: 5; fill: #3b82f6; cursor: pointer; }
+        .landmark-label { font-size: 8px; fill: #9ca3af; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-200 font-sans">
+
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 bg-gray-900 border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col">
+            <div class="p-6 border-b border-gray-800">
+                <h1 class="text-xl font-bold text-white tracking-tight">LogiInsight</h1>
+                <p class="text-xs text-gray-500 mt-1">AI‑Native Smart Webcam</p>
+            </div>
+            <nav class="flex-1 p-4 space-y-1">
+                <a href="index.html" class="nav-link block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                    Overview
+                </a>
+                <a href="setup.html" class="nav-link block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                    Setup Guide
+                </a>
+                <a href="api_reference.html" class="nav-link block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                    API Reference
+                </a>
+                <a href="data_models.html" class="nav-link active block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition">
+                    Data Models
+                </a>
+            </nav>
+            <!-- In-page anchors -->
+            <div class="px-4 pb-4">
+                <p class="text-xs text-gray-600 uppercase tracking-wider mb-2 px-4">On this page</p>
+                <a href="#json-schema" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">JSON Schema</a>
+                <a href="#face-model" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Face Model</a>
+                <a href="#face-mesh-diagram" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Face Mesh Diagram</a>
+                <a href="#hand-model" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Hand Model</a>
+                <a href="#hand-diagram" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Hand Diagram</a>
+                <a href="#coordinate-system" class="block px-4 py-1.5 text-xs text-gray-500 hover:text-gray-300 transition">Coordinate System</a>
+            </div>
+            <div class="p-4 border-t border-gray-800 text-xs text-gray-600">
+                &copy; 2026 Logitech Europe S.A.
+            </div>
+        </aside>
+
+        <!-- Mobile Navbar -->
+        <div class="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between">
+            <h1 class="text-lg font-bold text-white">LogiInsight</h1>
+            <button id="mobile-menu-btn" class="text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="md:hidden fixed inset-0 z-40 bg-gray-900 bg-opacity-95 hidden flex-col p-6 pt-20 space-y-2">
+            <a href="index.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800">Overview</a>
+            <a href="setup.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800">Setup Guide</a>
+            <a href="api_reference.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800">API Reference</a>
+            <a href="data_models.html" class="block px-4 py-3 rounded-lg text-sm font-medium text-blue-400 bg-gray-800">Data Models</a>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
+
+                <!-- Header -->
+                <div class="mb-12">
+                    <div class="inline-block px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-semibold tracking-wide uppercase mb-4">
+                        Data Structures
+                    </div>
+                    <h1 class="text-4xl font-extrabold text-white mb-4">Data Models</h1>
+                    <p class="text-lg text-gray-400 max-w-2xl">
+                        Detailed schemas for the AI output data returned by <code class="bg-gray-800 px-1.5 py-0.5 rounded text-blue-300 text-sm">get_latest_ai_data()</code>, including Face Mesh (478 3D landmarks) and Hand Tracking (21 3D landmarks) structures.
+                    </p>
+                </div>
+
+                <!-- JSON Schema -->
+                <section id="json-schema" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Top-Level JSON Schema</h2>
+                    <p class="text-gray-400 mb-4">
+                        Every call to <code class="bg-gray-800 px-1.5 py-0.5 rounded text-blue-300 text-sm">get_latest_ai_data()</code> returns a dictionary with this structure (or <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">None</code>):
+                    </p>
+                    <div class="code-wrapper relative">
+                        <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-json">{
+  "timestamp_ms": 453404,
+  "faces": [
+    {
+      "bbox": [956.0, 400.0, 264.0, 349.0],
+      "confidence": 0.97,
+      "landmarks": [
+        [110.25, 210.50, 0.12],
+        [115.75, 215.30, 0.08],
+        ...
+      ]
+    }
+  ],
+  "hands": [
+    {
+      "bbox": [313.0, 385.0, 89.0, 137.0],
+      "confidence": 0.87,
+      "landmarks": [
+        [60.25, 110.50, 0.00],
+        [65.75, 115.30, 0.00],
+        ...
+      ]
+    }
+  ]
+}</code></pre>
+                    </div>
+                    <div class="overflow-x-auto mt-4">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">Key</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">timestamp_ms</td>
+                                    <td class="py-3 px-4 text-gray-500">int</td>
+                                    <td class="py-3 px-4">Device-side epoch timestamp in milliseconds</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">faces</td>
+                                    <td class="py-3 px-4 text-gray-500">list[FaceResult]</td>
+                                    <td class="py-3 px-4">Array of detected face objects (empty if none)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono text-blue-300">hands</td>
+                                    <td class="py-3 px-4 text-gray-500">list[HandResult]</td>
+                                    <td class="py-3 px-4">Array of detected hand objects (empty if none)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Face Model -->
+                <section id="face-model" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Face Result Object</h2>
+                    <p class="text-gray-400 mb-4">
+                        Each entry in the <code class="bg-gray-800 px-1.5 py-0.5 rounded text-blue-300 text-sm">faces</code> array contains:
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">Field</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">bbox</td>
+                                    <td class="py-3 px-4 text-gray-500">list[float] (4)</td>
+                                    <td class="py-3 px-4">Bounding box as <code class="bg-gray-800 px-1 py-0.5 rounded text-xs">[x, y, width, height]</code> in sensor pixel coordinates</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">confidence</td>
+                                    <td class="py-3 px-4 text-gray-500">float</td>
+                                    <td class="py-3 px-4">Detection confidence score [0.0, 1.0]</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono text-blue-300">landmarks</td>
+                                    <td class="py-3 px-4 text-gray-500">list[list[float]]</td>
+                                    <td class="py-3 px-4">Up to <strong class="text-white">478</strong> face mesh landmarks (empty if mesh disabled). Each point is an <code class="bg-gray-800 px-1 py-0.5 rounded text-xs">[x, y, z]</code> array in pixel coordinates.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="code-wrapper relative mt-5">
+                        <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Accessing face data
+data = cam.get_latest_ai_data()
+if data:
+    for face in data["faces"]:
+        x, y, w, h = face["bbox"]        # [x, y, width, height] in pixels
+        confidence = face["confidence"]
+        landmarks = face["landmarks"]     # list of [x, y, z] arrays
+
+        # Example: get nose tip (landmark index 1)
+        if len(landmarks) > 1:
+            nose_x, nose_y, nose_z = landmarks[1]
+            print(f"Nose tip: ({nose_x:.2f}, {nose_y:.2f}, {nose_z:.2f})")</code></pre>
+                    </div>
+                </section>
+
+                <!-- Face Mesh Diagram (AC-4) -->
+                <section id="face-mesh-diagram" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Face Mesh — 478 Landmark Points</h2>
+                    <p class="text-gray-400 mb-6">
+                        The face mesh model produces <strong class="text-white">478 three‑dimensional landmarks</strong> covering the full face topology — contours, eyes, eyebrows, nose, lips, and irises. 
+                        Below is a schematic overview of key landmark regions.
+                    </p>
+
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                        <svg viewBox="0 0 400 480" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Face outline -->
+                            <ellipse cx="200" cy="230" rx="130" ry="170" fill="none" stroke="#374151" stroke-width="1.5" />
+
+                            <!-- Forehead region dots -->
+                            <g>
+                                <text x="200" y="75" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">Forehead (10–67)</text>
+                                <circle cx="160" cy="100" r="2.5" fill="#6366f1" class="landmark-dot"/><circle cx="175" cy="95" r="2.5" fill="#6366f1" class="landmark-dot"/>
+                                <circle cx="190" cy="92" r="2.5" fill="#6366f1" class="landmark-dot"/><circle cx="205" cy="92" r="2.5" fill="#6366f1" class="landmark-dot"/>
+                                <circle cx="220" cy="95" r="2.5" fill="#6366f1" class="landmark-dot"/><circle cx="235" cy="100" r="2.5" fill="#6366f1" class="landmark-dot"/>
+                            </g>
+
+                            <!-- Left eyebrow -->
+                            <g>
+                                <text x="135" y="130" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">L Eyebrow (70–79)</text>
+                                <circle cx="120" cy="150" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="132" cy="145" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="145" cy="142" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="158" cy="144" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="168" cy="148" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                            </g>
+
+                            <!-- Right eyebrow -->
+                            <g>
+                                <text x="265" y="130" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">R Eyebrow (300–309)</text>
+                                <circle cx="232" cy="148" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="242" cy="144" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="255" cy="142" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="268" cy="145" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                                <circle cx="280" cy="150" r="2.5" fill="#a78bfa" class="landmark-dot"/>
+                            </g>
+
+                            <!-- Left eye -->
+                            <g>
+                                <text x="145" y="170" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">L Eye (130–159)</text>
+                                <ellipse cx="150" cy="185" rx="22" ry="10" fill="none" stroke="#60a5fa" stroke-width="1"/>
+                                <circle cx="130" cy="185" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="140" cy="178" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <circle cx="150" cy="176" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="160" cy="178" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <circle cx="170" cy="185" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="160" cy="192" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <circle cx="150" cy="194" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="140" cy="192" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <!-- Iris -->
+                                <circle cx="150" cy="185" r="5" fill="none" stroke="#34d399" stroke-width="1"/>
+                                <circle cx="150" cy="185" r="2" fill="#34d399" class="landmark-dot"/>
+                                <text x="150" y="205" text-anchor="middle" class="landmark-label" style="font-size:8px; fill:#34d399;">Iris (468–472)</text>
+                            </g>
+
+                            <!-- Right eye -->
+                            <g>
+                                <text x="255" y="170" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">R Eye (360–389)</text>
+                                <ellipse cx="250" cy="185" rx="22" ry="10" fill="none" stroke="#60a5fa" stroke-width="1"/>
+                                <circle cx="230" cy="185" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="240" cy="178" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <circle cx="250" cy="176" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="260" cy="178" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <circle cx="270" cy="185" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="260" cy="192" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <circle cx="250" cy="194" r="2" fill="#60a5fa" class="landmark-dot"/><circle cx="240" cy="192" r="2" fill="#60a5fa" class="landmark-dot"/>
+                                <!-- Iris -->
+                                <circle cx="250" cy="185" r="5" fill="none" stroke="#34d399" stroke-width="1"/>
+                                <circle cx="250" cy="185" r="2" fill="#34d399" class="landmark-dot"/>
+                                <text x="250" y="205" text-anchor="middle" class="landmark-label" style="font-size:8px; fill:#34d399;">Iris (473–477)</text>
+                            </g>
+
+                            <!-- Nose -->
+                            <g>
+                                <text x="200" y="218" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">Nose (1–19)</text>
+                                <circle cx="200" cy="230" r="2.5" fill="#f59e0b" class="landmark-dot"/>
+                                <circle cx="195" cy="240" r="2" fill="#f59e0b" class="landmark-dot"/>
+                                <circle cx="200" cy="245" r="2" fill="#f59e0b" class="landmark-dot"/>
+                                <circle cx="205" cy="240" r="2" fill="#f59e0b" class="landmark-dot"/>
+                                <circle cx="188" cy="250" r="2" fill="#f59e0b" class="landmark-dot"/>
+                                <circle cx="200" cy="255" r="2.5" fill="#f59e0b" class="landmark-dot"/>
+                                <circle cx="212" cy="250" r="2" fill="#f59e0b" class="landmark-dot"/>
+                            </g>
+
+                            <!-- Lips -->
+                            <g>
+                                <text x="200" y="272" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">Lips (61–95, 185–212)</text>
+                                <!-- Outer lip -->
+                                <path d="M160 295 Q170 280 200 278 Q230 280 240 295 Q230 310 200 312 Q170 310 160 295Z" fill="none" stroke="#f43f5e" stroke-width="1.2"/>
+                                <circle cx="160" cy="295" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="175" cy="283" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="200" cy="278" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="225" cy="283" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="240" cy="295" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="225" cy="307" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="200" cy="312" r="2" fill="#f43f5e" class="landmark-dot"/>
+                                <circle cx="175" cy="307" r="2" fill="#f43f5e" class="landmark-dot"/>
+                            </g>
+
+                            <!-- Jaw contour -->
+                            <g>
+                                <text x="200" y="395" text-anchor="middle" class="landmark-label" style="font-size:10px; fill:#6b7280;">Jaw Contour (0, 172–199)</text>
+                                <circle cx="95" cy="230" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="90" cy="260" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="92" cy="290" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="100" cy="320" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="120" cy="345" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="150" cy="365" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="200" cy="380" r="2.5" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="250" cy="365" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="280" cy="345" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="300" cy="320" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="308" cy="290" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="310" cy="260" r="2" fill="#9ca3af" class="landmark-dot"/>
+                                <circle cx="305" cy="230" r="2" fill="#9ca3af" class="landmark-dot"/>
+                            </g>
+
+                            <!-- Legend -->
+                            <g transform="translate(10, 420)">
+                                <text x="0" y="0" style="font-size:9px; fill:#9ca3af; font-weight:600;">LANDMARK REGIONS</text>
+                                <circle cx="5" cy="15" r="3" fill="#6366f1"/><text x="14" y="18" style="font-size:8px; fill:#9ca3af;">Forehead</text>
+                                <circle cx="75" cy="15" r="3" fill="#a78bfa"/><text x="84" y="18" style="font-size:8px; fill:#9ca3af;">Eyebrows</text>
+                                <circle cx="145" cy="15" r="3" fill="#60a5fa"/><text x="154" y="18" style="font-size:8px; fill:#9ca3af;">Eyes</text>
+                                <circle cx="195" cy="15" r="3" fill="#34d399"/><text x="204" y="18" style="font-size:8px; fill:#9ca3af;">Irises</text>
+                                <circle cx="5" cy="32" r="3" fill="#f59e0b"/><text x="14" y="35" style="font-size:8px; fill:#9ca3af;">Nose</text>
+                                <circle cx="55" cy="32" r="3" fill="#f43f5e"/><text x="64" y="35" style="font-size:8px; fill:#9ca3af;">Lips</text>
+                                <circle cx="105" cy="32" r="3" fill="#9ca3af"/><text x="114" y="35" style="font-size:8px; fill:#9ca3af;">Jaw Contour</text>
+                                <text x="220" y="35" style="font-size:8px; fill:#6b7280;">Total: 478 points</text>
+                            </g>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Hand Model -->
+                <section id="hand-model" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Hand Result Object</h2>
+                    <p class="text-gray-400 mb-4">
+                        Each entry in the <code class="bg-gray-800 px-1.5 py-0.5 rounded text-blue-300 text-sm">hands</code> array contains:
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">Field</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">bbox</td>
+                                    <td class="py-3 px-4 text-gray-500">list[float] (4)</td>
+                                    <td class="py-3 px-4">Bounding box as <code class="bg-gray-800 px-1 py-0.5 rounded text-xs">[x, y, width, height]</code> in sensor pixel coordinates</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">confidence</td>
+                                    <td class="py-3 px-4 text-gray-500">float</td>
+                                    <td class="py-3 px-4">Detection confidence score [0.0, 1.0]</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono text-blue-300">landmarks</td>
+                                    <td class="py-3 px-4 text-gray-500">list[list[float]] (21)</td>
+                                    <td class="py-3 px-4"><strong class="text-white">21</strong> hand landmarks. Each point is an <code class="bg-gray-800 px-1 py-0.5 rounded text-xs">[x, y, z]</code> array in pixel coordinates (z is always 0.0).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Hand landmark index table -->
+                    <h3 class="text-lg font-semibold text-white mt-6 mb-3">Hand Landmark Indices</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-2 px-3">Index</th>
+                                    <th class="py-2 px-3">Name</th>
+                                    <th class="py-2 px-3">Index</th>
+                                    <th class="py-2 px-3">Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">0</td>
+                                    <td class="py-2 px-3">WRIST</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">11</td>
+                                    <td class="py-2 px-3">MIDDLE_FINGER_DIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">1</td>
+                                    <td class="py-2 px-3">THUMB_CMC</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">12</td>
+                                    <td class="py-2 px-3">MIDDLE_FINGER_TIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">2</td>
+                                    <td class="py-2 px-3">THUMB_MCP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">13</td>
+                                    <td class="py-2 px-3">RING_FINGER_MCP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">3</td>
+                                    <td class="py-2 px-3">THUMB_IP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">14</td>
+                                    <td class="py-2 px-3">RING_FINGER_PIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">4</td>
+                                    <td class="py-2 px-3">THUMB_TIP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">15</td>
+                                    <td class="py-2 px-3">RING_FINGER_DIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">5</td>
+                                    <td class="py-2 px-3">INDEX_FINGER_MCP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">16</td>
+                                    <td class="py-2 px-3">RING_FINGER_TIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">6</td>
+                                    <td class="py-2 px-3">INDEX_FINGER_PIP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">17</td>
+                                    <td class="py-2 px-3">PINKY_MCP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">7</td>
+                                    <td class="py-2 px-3">INDEX_FINGER_DIP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">18</td>
+                                    <td class="py-2 px-3">PINKY_PIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">8</td>
+                                    <td class="py-2 px-3">INDEX_FINGER_TIP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">19</td>
+                                    <td class="py-2 px-3">PINKY_DIP</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-2 px-3 font-mono text-blue-300">9</td>
+                                    <td class="py-2 px-3">MIDDLE_FINGER_MCP</td>
+                                    <td class="py-2 px-3 font-mono text-blue-300">20</td>
+                                    <td class="py-2 px-3">PINKY_TIP</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-3 font-mono text-blue-300">10</td>
+                                    <td class="py-2 px-3">MIDDLE_FINGER_PIP</td>
+                                    <td class="py-2 px-3" colspan="2"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="code-wrapper relative mt-5">
+                        <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Mapping hand landmarks to gesture detection
+# Each landmark is [x, y, z] in pixel coordinates
+WRIST = 0
+INDEX_TIP = 8
+MIDDLE_TIP = 12
+PINKY_TIP = 20
+
+data = cam.get_latest_ai_data()
+if data:
+    for hand in data["hands"]:
+        lm = hand["landmarks"]       # list of [x, y, z] arrays
+        bbox = hand["bbox"]          # [x, y, width, height]
+        conf = hand["confidence"]
+
+        # Check if index finger is extended (tip above MCP)
+        if lm[INDEX_TIP][1] < lm[5][1]:   # compare y coords
+            print("Index finger is raised!")
+
+        # Compute distance between thumb tip and index tip
+        dx = lm[4][0] - lm[INDEX_TIP][0]
+        dy = lm[4][1] - lm[INDEX_TIP][1]
+        dist = (dx**2 + dy**2) ** 0.5
+        print(f"Thumb-Index distance: {dist:.1f} px")</code></pre>
+                    </div>
+                </section>
+
+                <!-- Hand Landmark Diagram (AC-4) -->
+                <section id="hand-diagram" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Hand Landmarks — 21 Points</h2>
+                    <p class="text-gray-400 mb-6">
+                        The hand tracking model produces <strong class="text-white">21 three‑dimensional landmarks</strong> per detected hand. 
+                        The diagram below shows the standard MediaPipe hand landmark topology.
+                    </p>
+
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                        <svg viewBox="0 0 400 520" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Palm / connections -->
+                            <!-- Wrist to each MCP -->
+                            <line x1="200" y1="460" x2="130" y2="340" stroke="#374151" stroke-width="1.2"/><!-- Thumb CMC -->
+                            <line x1="200" y1="460" x2="170" y2="280" stroke="#374151" stroke-width="1.2"/><!-- Index MCP -->
+                            <line x1="200" y1="460" x2="200" y2="260" stroke="#374151" stroke-width="1.2"/><!-- Middle MCP -->
+                            <line x1="200" y1="460" x2="230" y2="275" stroke="#374151" stroke-width="1.2"/><!-- Ring MCP -->
+                            <line x1="200" y1="460" x2="260" y2="295" stroke="#374151" stroke-width="1.2"/><!-- Pinky MCP -->
+
+                            <!-- Thumb chain: 1→2→3→4 -->
+                            <line x1="130" y1="340" x2="105" y2="290" stroke="#f59e0b" stroke-width="1.5"/>
+                            <line x1="105" y1="290" x2="85" y2="240" stroke="#f59e0b" stroke-width="1.5"/>
+                            <line x1="85" y1="240" x2="70" y2="195" stroke="#f59e0b" stroke-width="1.5"/>
+
+                            <!-- Index chain: 5→6→7→8 -->
+                            <line x1="170" y1="280" x2="160" y2="210" stroke="#3b82f6" stroke-width="1.5"/>
+                            <line x1="160" y1="210" x2="153" y2="150" stroke="#3b82f6" stroke-width="1.5"/>
+                            <line x1="153" y1="150" x2="148" y2="90" stroke="#3b82f6" stroke-width="1.5"/>
+
+                            <!-- Middle chain: 9→10→11→12 -->
+                            <line x1="200" y1="260" x2="200" y2="185" stroke="#22c55e" stroke-width="1.5"/>
+                            <line x1="200" y1="185" x2="200" y2="120" stroke="#22c55e" stroke-width="1.5"/>
+                            <line x1="200" y1="120" x2="200" y2="60" stroke="#22c55e" stroke-width="1.5"/>
+
+                            <!-- Ring chain: 13→14→15→16 -->
+                            <line x1="230" y1="275" x2="240" y2="200" stroke="#a855f7" stroke-width="1.5"/>
+                            <line x1="240" y1="200" x2="247" y2="140" stroke="#a855f7" stroke-width="1.5"/>
+                            <line x1="247" y1="140" x2="252" y2="85" stroke="#a855f7" stroke-width="1.5"/>
+
+                            <!-- Pinky chain: 17→18→19→20 -->
+                            <line x1="260" y1="295" x2="275" y2="230" stroke="#f43f5e" stroke-width="1.5"/>
+                            <line x1="275" y1="230" x2="285" y2="178" stroke="#f43f5e" stroke-width="1.5"/>
+                            <line x1="285" y1="178" x2="293" y2="130" stroke="#f43f5e" stroke-width="1.5"/>
+
+                            <!-- MCP connections (palm) -->
+                            <line x1="170" y1="280" x2="200" y2="260" stroke="#374151" stroke-width="1"/>
+                            <line x1="200" y1="260" x2="230" y2="275" stroke="#374151" stroke-width="1"/>
+                            <line x1="230" y1="275" x2="260" y2="295" stroke="#374151" stroke-width="1"/>
+
+                            <!-- Landmark dots with labels -->
+                            <!-- 0: Wrist -->
+                            <circle cx="200" cy="460" r="5" fill="#9ca3af" class="landmark-dot"/>
+                            <text x="218" y="465" style="font-size:9px; fill:#d1d5db; font-weight:600;">0 WRIST</text>
+
+                            <!-- Thumb -->
+                            <circle cx="130" cy="340" r="4" fill="#f59e0b" class="landmark-dot"/>
+                            <text x="90" y="345" style="font-size:8px; fill:#fbbf24;">1 CMC</text>
+                            <circle cx="105" cy="290" r="4" fill="#f59e0b" class="landmark-dot"/>
+                            <text x="65" y="295" style="font-size:8px; fill:#fbbf24;">2 MCP</text>
+                            <circle cx="85" cy="240" r="4" fill="#f59e0b" class="landmark-dot"/>
+                            <text x="48" y="245" style="font-size:8px; fill:#fbbf24;">3 IP</text>
+                            <circle cx="70" cy="195" r="5" fill="#f59e0b" class="landmark-dot"/>
+                            <text x="33" y="200" style="font-size:8px; fill:#fbbf24;">4 TIP</text>
+
+                            <!-- Index -->
+                            <circle cx="170" cy="280" r="4" fill="#3b82f6" class="landmark-dot"/>
+                            <text x="130" y="275" style="font-size:8px; fill:#60a5fa;">5 MCP</text>
+                            <circle cx="160" cy="210" r="4" fill="#3b82f6" class="landmark-dot"/>
+                            <text x="120" y="215" style="font-size:8px; fill:#60a5fa;">6 PIP</text>
+                            <circle cx="153" cy="150" r="4" fill="#3b82f6" class="landmark-dot"/>
+                            <text x="113" y="155" style="font-size:8px; fill:#60a5fa;">7 DIP</text>
+                            <circle cx="148" cy="90" r="5" fill="#3b82f6" class="landmark-dot"/>
+                            <text x="108" y="95" style="font-size:8px; fill:#60a5fa;">8 TIP</text>
+
+                            <!-- Middle -->
+                            <circle cx="200" cy="260" r="4" fill="#22c55e" class="landmark-dot"/>
+                            <text x="208" y="255" style="font-size:8px; fill:#4ade80;">9 MCP</text>
+                            <circle cx="200" cy="185" r="4" fill="#22c55e" class="landmark-dot"/>
+                            <text x="208" y="190" style="font-size:8px; fill:#4ade80;">10 PIP</text>
+                            <circle cx="200" cy="120" r="4" fill="#22c55e" class="landmark-dot"/>
+                            <text x="208" y="125" style="font-size:8px; fill:#4ade80;">11 DIP</text>
+                            <circle cx="200" cy="60" r="5" fill="#22c55e" class="landmark-dot"/>
+                            <text x="208" y="65" style="font-size:8px; fill:#4ade80;">12 TIP</text>
+
+                            <!-- Ring -->
+                            <circle cx="230" cy="275" r="4" fill="#a855f7" class="landmark-dot"/>
+                            <text x="245" y="278" style="font-size:8px; fill:#c084fc;">13 MCP</text>
+                            <circle cx="240" cy="200" r="4" fill="#a855f7" class="landmark-dot"/>
+                            <text x="252" y="205" style="font-size:8px; fill:#c084fc;">14 PIP</text>
+                            <circle cx="247" cy="140" r="4" fill="#a855f7" class="landmark-dot"/>
+                            <text x="258" y="145" style="font-size:8px; fill:#c084fc;">15 DIP</text>
+                            <circle cx="252" cy="85" r="5" fill="#a855f7" class="landmark-dot"/>
+                            <text x="262" y="90" style="font-size:8px; fill:#c084fc;">16 TIP</text>
+
+                            <!-- Pinky -->
+                            <circle cx="260" cy="295" r="4" fill="#f43f5e" class="landmark-dot"/>
+                            <text x="275" y="300" style="font-size:8px; fill:#fb7185;">17 MCP</text>
+                            <circle cx="275" cy="230" r="4" fill="#f43f5e" class="landmark-dot"/>
+                            <text x="290" y="235" style="font-size:8px; fill:#fb7185;">18 PIP</text>
+                            <circle cx="285" cy="178" r="4" fill="#f43f5e" class="landmark-dot"/>
+                            <text x="298" y="183" style="font-size:8px; fill:#fb7185;">19 DIP</text>
+                            <circle cx="293" cy="130" r="5" fill="#f43f5e" class="landmark-dot"/>
+                            <text x="305" y="135" style="font-size:8px; fill:#fb7185;">20 TIP</text>
+
+                            <!-- Legend -->
+                            <g transform="translate(10, 490)">
+                                <text x="0" y="0" style="font-size:9px; fill:#9ca3af; font-weight:600;">FINGERS</text>
+                                <circle cx="5" cy="14" r="3" fill="#f59e0b"/><text x="14" y="17" style="font-size:8px; fill:#9ca3af;">Thumb</text>
+                                <circle cx="60" cy="14" r="3" fill="#3b82f6"/><text x="69" y="17" style="font-size:8px; fill:#9ca3af;">Index</text>
+                                <circle cx="110" cy="14" r="3" fill="#22c55e"/><text x="119" y="17" style="font-size:8px; fill:#9ca3af;">Middle</text>
+                                <circle cx="170" cy="14" r="3" fill="#a855f7"/><text x="179" y="17" style="font-size:8px; fill:#9ca3af;">Ring</text>
+                                <circle cx="215" cy="14" r="3" fill="#f43f5e"/><text x="224" y="17" style="font-size:8px; fill:#9ca3af;">Pinky</text>
+                                <text x="278" y="17" style="font-size:8px; fill:#6b7280;">Total: 21 points</text>
+                            </g>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Point3D -->
+                <section id="coordinate-system" class="mb-14">
+                    <h2 class="text-2xl font-bold text-white mb-4">Coordinate System — Point3D</h2>
+                    <p class="text-gray-400 mb-4">
+                        Every landmark point in both face and hand results is a 3-element array <code class="bg-gray-800 px-1 py-0.5 rounded text-blue-300 text-sm">[x, y, z]</code>:
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3 px-4">Index</th>
+                                    <th class="py-3 px-4">Axis</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">0</td>
+                                    <td class="py-3 px-4 font-mono text-blue-300">x</td>
+                                    <td class="py-3 px-4 text-gray-500">float</td>
+                                    <td class="py-3 px-4">Horizontal position in pixel coordinates.</td>
+                                </tr>
+                                <tr class="border-b border-gray-800/50">
+                                    <td class="py-3 px-4 font-mono text-blue-300">1</td>
+                                    <td class="py-3 px-4 font-mono text-blue-300">y</td>
+                                    <td class="py-3 px-4 text-gray-500">float</td>
+                                    <td class="py-3 px-4">Vertical position in pixel coordinates.</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono text-blue-300">2</td>
+                                    <td class="py-3 px-4 font-mono text-blue-300">z</td>
+                                    <td class="py-3 px-4 text-gray-500">float</td>
+                                    <td class="py-3 px-4">Depth value. For face landmarks, relative depth from the face plane. For hand landmarks, always 0.0.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mt-4">
+                        <p class="text-yellow-300 text-sm">
+                            <strong>Note:</strong> Both bounding boxes and landmarks use <strong>sensor pixel coordinates</strong>, not normalized [0, 1] values. The sensor resolution is typically 3840x2160 (4K). To map these to your UVC frame resolution, scale by <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">frame_width / 3840</code> and <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">frame_height / 2160</code>.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mt-5">
+                        <h3 class="text-white font-semibold mb-2">C Firmware Equivalent</h3>
+                        <p class="text-gray-400 text-sm mb-3">
+                            On the device side, the firmware uses the following C struct (defined in <code class="bg-gray-800 px-1 py-0.5 rounded text-sm">logiwebcam_ai_output.h</code>):
+                        </p>
+                        <div class="code-wrapper relative">
+                            <button class="copy-btn absolute bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-python"># C struct equivalent (for reference):
+# typedef struct {
+#     float x;
+#     float y;
+#     float z;
+# } ai_point3d_t;
+#
+# MAX_FACE_LANDMARKS = 478
+# MAX_HAND_LANDMARKS = 21</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Back to start -->
+                <section class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center">
+                    <h2 class="text-xl font-bold text-white mb-3">Explore the full documentation</h2>
+                    <p class="text-gray-400 mb-6 text-sm">Jump to any section of the LogiInsight developer documentation.</p>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <a href="index.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium px-5 py-2.5 rounded-lg transition text-sm">
+                            Overview
+                        </a>
+                        <a href="setup.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium px-5 py-2.5 rounded-lg transition text-sm">
+                            Setup Guide
+                        </a>
+                        <a href="api_reference.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium px-5 py-2.5 rounded-lg transition text-sm">
+                            API Reference
+                        </a>
+                        <a href="data_models.html" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 py-2.5 rounded-lg transition text-sm">
+                            Data Models (current)
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        function copyCode(btn) {
+            const code = btn.nextElementSibling.querySelector('code');
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
